@@ -862,7 +862,7 @@
       }
     ];
 
-let currentQuestion = 0;
+  let currentQuestion = 0;
   let correctCount = 0;
 
   const quizDiv = document.getElementById("quiz");
@@ -870,11 +870,18 @@ let currentQuestion = 0;
 
   function loadQuestion() {
     const q = questions[currentQuestion];
+    const isSingleAnswer = q.correct.length === 1;
+
     quizDiv.innerHTML = `
       <div class="question-block">
         <h3>${q.question}</h3>
         <div class="options">${q.options.map((opt, i) => `
-          <label><input type="checkbox" data-index="${i}" /> ${opt}</label>`).join('')}
+          <label>
+            ${isSingleAnswer ? 
+              `<input type="radio" name="answer" data-index="${i}">` : 
+              `<input type="checkbox" data-index="${i}">`}
+            ${opt}
+          </label>`).join('')}
         </div>
         <button onclick="checkAnswer()">Проверить</button>
         <div class="result" id="result"></div>
@@ -886,10 +893,11 @@ let currentQuestion = 0;
 
   function checkAnswer() {
     const q = questions[currentQuestion];
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const inputs = document.querySelectorAll('input[type="radio"], input[type="checkbox"]');
     let selected = [];
-    checkboxes.forEach((cb, i) => {
-      if (cb.checked) selected.push(i);
+
+    inputs.forEach((el, i) => {
+      if (el.checked) selected.push(i);
     });
 
     const resultDiv = document.getElementById("result");
@@ -901,9 +909,9 @@ let currentQuestion = 0;
       correctCount++;
     } else {
       resultDiv.innerHTML = '<span class="incorrect">❌ Неправильно.</span><br>';
-      checkboxes.forEach((cb, i) => {
-        if (correctSet.has(i)) cb.parentElement.style.color = 'green';
-        else if (selectedSet.has(i)) cb.parentElement.style.color = 'red';
+      inputs.forEach((el, i) => {
+        if (correctSet.has(i)) el.parentElement.style.color = 'green';
+        else if (selectedSet.has(i)) el.parentElement.style.color = 'red';
       });
     }
 
@@ -928,7 +936,6 @@ let currentQuestion = 0;
     }
   }
 
-  // Инициализация начального отображения счёта
   window.onload = () => {
     scoreDiv.textContent = `Правильных ответов: 0 / ${questions.length}`;
     loadQuestion();
