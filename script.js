@@ -7,32 +7,6 @@ function shuffle(array) {
   return arr;
 }
 
-function loadProgress() {
-  const saved = localStorage.getItem("quizProgress");
-  if (saved) {
-    const data = JSON.parse(saved);
-    correctCount = data.correctCount || 0;
-    wrongQuestions = data.wrongQuestions || [];
-    return true;
-  }
-  return false;
-}
-
-function saveProgress() {
-  const data = {
-    correctCount,
-    wrongQuestions: wrongQuestions.map(q => q.question)
-  };
-  localStorage.setItem("quizProgress", JSON.stringify(data));
-}
-
-function resetProgress() {
-  correctCount = 0;
-  wrongQuestions = [];
-  localStorage.removeItem("quizProgress");
-  startQuiz();
-}
-
 let questions = [];
 let currentQuestion = 0;
 let mode = 'main';
@@ -43,10 +17,6 @@ const quizDiv = document.getElementById("quiz");
 const scoreDiv = document.getElementById("score");
 
 window.onload = () => {
-  if (!loadProgress()) {
-    correctCount = 0;
-    wrongQuestions = [];
-  }
   startQuiz();
 };
 
@@ -54,6 +24,7 @@ function startQuiz() {
   mode = 'main';
   questions = shuffle(originalQuestions);
   currentQuestion = 0;
+  correctCount = 0;
   updateScoreDisplay();
   loadQuestion();
 }
@@ -71,7 +42,9 @@ function showWrong() {
 }
 
 function updateScoreDisplay() {
-  scoreDiv.textContent = `Правильных ответов: ${correctCount} / ${originalQuestions.length}`;
+  const totalQuestions = originalQuestions.length;
+  const answered = currentQuestion + 1;
+  scoreDiv.textContent = `Пройдено вопросов: ${answered} / ${totalQuestions}`;
 }
 
 function loadQuestion() {
@@ -140,14 +113,13 @@ function checkAnswer() {
       const indexInWrong = wrongQuestions.findIndex(item => item.question === q.question);
       if (indexInWrong > -1) {
         wrongQuestions.splice(indexInWrong, 1);
-        saveProgress();
       }
     }
   } else {
     resultDiv.innerHTML = '<span class="incorrect">❌ Неправильно.</span><br>';
     if (mode === 'main') {
       if (!wrongQuestions.some(item => item.question === q.question)) {
-        wrongQuestions.push(q);
+        wrongQuestions.push({...q});
       }
     }
     inputs.forEach(el => {
@@ -157,10 +129,7 @@ function checkAnswer() {
     });
   }
 
-  if (mode === 'main') {
-    updateScoreDisplay();
-    saveProgress();
-  }
+  updateScoreDisplay();
 }
 
 function arraysEqual(a, b) {
@@ -206,13 +175,7 @@ function showFinalScreen() {
       <p style="font-size: 18px;">(${percent}% правильных ответов)</p>
       <p style="font-size: 16px;">${resultText}</p>
       <button onclick="showWrong()" style="margin: 10px; background-color:rgb(0, 0, 0);">🔁 Повторить ошибки</button>
-      <button onclick="resetProgress()" style="margin: 10px; background-color:rgb(0, 0, 0); color: black;">🔄 Пройти тест заново</button>
+      <button onclick="startQuiz()" style="margin: 10px; background-color:rgb(0, 0, 0); color: black;">🔄 Пройти тест заново</button>
     </div>
-  `;
-}
-
-if (document.getElementById("quiz-controls")) {
-  document.getElementById("quiz-controls").innerHTML += `
-    <button onclick="resetProgress()" style="margin-top: 10px; background-color:rgb(0, 0, 0);">🔄 Пройти тест заново</button>
   `;
 }
