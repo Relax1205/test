@@ -579,7 +579,7 @@ const originalQuestions = [
       "SYSTIMESTAMP",
       "CURRENT_TIMESTAMP"
     ],
-    correct: [0, 1, 3]
+    correct: [0, 3]
   },
   {
     question: "Какая функция возвращает текущую дату и время вместе с локальным часовым поясом?",
@@ -660,16 +660,6 @@ const originalQuestions = [
       "Деление отношений"
     ],
     correct: [0, 2, 3]
-  },
-  {
-  question: "Каков общий синтаксис оператора для соединения таблиц в языке SQL?",
-  options: [
-    "SELECT поля FROM таблица_1 AND таблица_2 ON условие",
-    "SELECT поля FROM таблица_1 WHERE таблица_2 = условие",
-    "SELECT поля FROM таблица_1 JOIN таблица_2 ON условие",
-    "SELECT поля FROM таблица_1 MERGE таблица_2 USING условие"
-  ],
-  correct: [2]
   },
   {
   question: "Какие функции используются для округления числовых данных к целому числу или с заданной точностью?",
