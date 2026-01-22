@@ -38,7 +38,7 @@ window.onload = () => {
 
 function startQuiz() {
   mode = 'main';
-  questions = shuffle(originalQuestions).map(q => 
+  questions = shuffle(Questions).map(q => 
     q.type === "matching" ? shuffleMatchingQuestion(q) : { ...q }
   );
   currentQuestion = 0;
@@ -62,7 +62,7 @@ function showWrong() {
 }
 
 function updateScoreDisplay() {
-  const totalQuestions = originalQuestions.length;
+  const totalQuestions = Questions.length;
   const answered = currentQuestion + 1;
   scoreDiv.textContent = `Пройдено вопросов: ${answered} / ${totalQuestions}`;
 }
@@ -241,7 +241,7 @@ function prevQuestion() {
 }
 
 function showFinalScreen() {
-  const total = originalQuestions.length;
+  const total = Questions.length;
   const percent = Math.round((correctCount / total) * 100);
 
   let resultText = "";
