@@ -1396,21 +1396,21 @@ const Questions = [
 {
   question: "Установите соответствие между порядком следования в SQL-запросе и ключевым словом.",
   type: "matching",
-  left: [
-    "1",
-    "2", 
-    "3",
-    "4",
-    "5",
-    "6"
-  ],
-  right: [
+    left: [
     "SELECT",
     "FROM",
     "WHERE", 
     "GROUP BY",
     "HAVING",
     "ORDER BY"
+  ],
+  right: [
+    "1",
+    "2", 
+    "3",
+    "4",
+    "5",
+    "6"
   ],
   correct: [1, 2, 3, 4, 0, 5]
   },
