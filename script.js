@@ -174,7 +174,19 @@ function checkAnswer() {
         if (indexInWrong > -1) wrongQuestions.splice(indexInWrong, 1);
       }
     } else {
-      resultDiv.innerHTML = '<span class="incorrect">❌ Неправильно.</span>';
+      // Отображаем правильные пары
+      const correctPairsHtml = q.correct.map((leftIndex, rightIndex) => `
+        <div style="margin: 4px 0; display: flex; align-items: center; font-weight: bold;">
+          <span style="min-width: 300px;">${q.right[rightIndex]}</span>
+          → ${q.left[leftIndex]}
+        </div>
+      `).join('');
+
+      resultDiv.innerHTML = `
+        <span class="incorrect">❌ Неправильно.</span><br>
+        <strong>Правильный ответ:</strong>
+        <div style="margin-top: 8px; text-align: left;">${correctPairsHtml}</div>
+      `;
       if (mode === 'main' && !wrongQuestions.some(item => item.question === q.question)) {
         wrongQuestions.push({...q});
       }
