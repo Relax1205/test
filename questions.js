@@ -1835,16 +1835,16 @@ const Questions = [
   question: "Расставьте элементы структуры блока функции plpgsql в правильном порядке",
   type: "matching",
   left: [
-    "DECLARE",
-    "BEGIN", 
-    "операторы",
-    "END"
-  ],
-  right: [
     "1",
     "2",
     "3",
     "4"
+  ],
+  right: [
+    "DECLARE",
+    "BEGIN", 
+    "операторы",
+    "END"
   ],
   correct: [0, 1, 2, 3]
   },
