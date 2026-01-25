@@ -35,17 +35,11 @@ const scoreDiv = document.getElementById("score");
 window.onload = () => {
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
-  if (document.getElementById('theme-switch')) {
-    document.getElementById('theme-switch').checked = (savedTheme === 'dark');
-  }
 
   startQuiz();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-
   const themeBtn = document.getElementById('theme-toggle-btn');
   if (themeBtn) {
     themeBtn.addEventListener('click', () => {
@@ -59,7 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function startQuiz() {
   mode = 'main';
-  questions = shuffle(Questions).map(q => 
+  if (typeof Questions === 'undefined' || !Array.isArray(Questions) || Questions.length === 0) {
+    quizDiv.innerHTML = '<div class="question-block" style="text-align:center;"><h3>Ошибка: вопросы не загружены!</h3></div>';
+    return;
+  }
+  questions = shuffle(Questions).map(q =>
     q.type === "matching" ? shuffleMatchingQuestion(q) : { ...q }
   );
   currentQuestion = 0;
@@ -74,7 +72,7 @@ function showWrong() {
     return;
   }
   mode = 'wrong';
-  questions = wrongQuestions.map(q => 
+  questions = wrongQuestions.map(q =>
     q.type === "matching" ? shuffleMatchingQuestion(q) : { ...q }
   );
   currentQuestion = 0;
@@ -83,12 +81,14 @@ function showWrong() {
 }
 
 function updateScoreDisplay() {
-  const totalQuestions = Questions.length;
-  const answered = currentQuestion + 1;
   if (mode === 'main') {
-    scoreDiv.textContent = `Пройдено вопросов: ${answered} / ${totalQuestions}`;
+    const total = Questions.length;
+    const answered = currentQuestion + 1;
+    scoreDiv.textContent = `Пройдено вопросов: ${answered} / ${total}`;
   } else {
-    scoreDiv.textContent = `Ошибка ${answered} из ${questions.length}`;
+    const total = questions.length;
+    const answered = currentQuestion + 1;
+    scoreDiv.textContent = `Ошибка ${answered} из ${total}`;
   }
 }
 
@@ -155,8 +155,8 @@ function loadQuestion() {
         <button onclick="checkAnswer()">Проверить</button>
         <div class="result" id="result"></div>
         <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-          <button onclick="prevQuestion()">⬅ Назад</button>
           <button onclick="nextQuestion()">➡ Вперёд</button>
+          <button onclick="prevQuestion()">⬅ Назад</button>
         </div>
       </div>
     `;
@@ -257,13 +257,8 @@ function arraysEqual(a, b) {
 }
 
 function nextQuestion() {
-  if (currentQuestion < questions.length - 1) {
-    currentQuestion++;
-    loadQuestion();
-  } else if (mode === 'main') {
-    currentQuestion++;
-    loadQuestion();
-  }
+  currentQuestion++;
+  loadQuestion();
 }
 
 function prevQuestion() {
