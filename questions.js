@@ -1043,7 +1043,7 @@ const Questions = [
       "VOID",
       "NEW"
     ],
-    correct: [0, 3]
+    correct: [0, 1, 3]
   },
   {
     question: "Сопоставьте аббревиатуру группы SQL операторов и её назначение",
@@ -1417,8 +1417,18 @@ const Questions = [
   {
   question: "Установите соответствие между порядковым номером и командой управления явными курсорами в логической последовательности их применения.",
   type: "matching",
-  left: ["1", "2", "3", "4"],
-  right: ["DECLARE", "OPEN", "FETCH", "CLOSE"],
+  left: [
+    "DECLARE", 
+    "OPEN", 
+    "FETCH", 
+    "CLOSE"
+  ],
+  right: [
+    "1",
+    "2", 
+    "3", 
+    "4"
+  ],
   correct: [0, 1, 2, 3]
   },
   {
@@ -1835,16 +1845,16 @@ const Questions = [
   question: "Расставьте элементы структуры блока функции plpgsql в правильном порядке",
   type: "matching",
   left: [
-    "1",
-    "2",
-    "3",
-    "4"
-  ],
-  right: [
     "DECLARE",
     "BEGIN", 
     "операторы",
     "END"
+  ],
+  right: [
+    "1",
+    "2",
+    "3",
+    "4"
   ],
   correct: [0, 1, 2, 3]
   },
@@ -1852,16 +1862,16 @@ const Questions = [
   question: "Расположите команды управления явными курсорами в логическом порядке их применения в программном коде",
   type: "matching",
   left: [
-    "OPEN",
-    "FETCH",
-    "DECLARE",
-    "CLOSE"
-  ],
-  right: [
     "1",
     "2",
     "3",
     "4"
+  ],
+  right: [
+    "OPEN",
+    "FETCH",
+    "DECLARE",
+    "CLOSE"
   ],
   correct: [2, 0, 1, 3]
   },
