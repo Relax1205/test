@@ -33,8 +33,29 @@ const quizDiv = document.getElementById("quiz");
 const scoreDiv = document.getElementById("score");
 
 window.onload = () => {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  if (document.getElementById('theme-switch')) {
+    document.getElementById('theme-switch').checked = (savedTheme === 'dark');
+  }
+
   startQuiz();
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
+  const themeBtn = document.getElementById('theme-toggle-btn');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+});
 
 function startQuiz() {
   mode = 'main';
@@ -64,11 +85,15 @@ function showWrong() {
 function updateScoreDisplay() {
   const totalQuestions = Questions.length;
   const answered = currentQuestion + 1;
-  scoreDiv.textContent = `Пройдено вопросов: ${answered} / ${totalQuestions}`;
+  if (mode === 'main') {
+    scoreDiv.textContent = `Пройдено вопросов: ${answered} / ${totalQuestions}`;
+  } else {
+    scoreDiv.textContent = `Ошибка ${answered} из ${questions.length}`;
+  }
 }
 
 function loadQuestion() {
-  if (questions.length === 0) {
+  if (currentQuestion >= questions.length) {
     showFinalScreen();
     return;
   }
@@ -78,8 +103,8 @@ function loadQuestion() {
 
   if (q.type === "matching") {
     const matchingHtml = q.right.map((item, idx) => `
-      <div style="margin: 8px 0; display: flex; align-items: center; flex-wrap: wrap;">
-        <span style="margin-right: 10px; min-width: 300px;">${item}</span>
+      <div class="matching-item">
+        <span>${item}</span>
         <select data-right-index="${idx}">
           <option value="">--</option>
           ${q.left.map((desc, i) => `<option value="${i}">${desc}</option>`).join('')}
@@ -95,8 +120,8 @@ function loadQuestion() {
         <button onclick="checkAnswer()">Проверить</button>
         <div class="result" id="result"></div>
         <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-          <button onclick="nextQuestion()">➡ Вперёд</button>
           <button onclick="prevQuestion()">⬅ Назад</button>
+          <button onclick="nextQuestion()">➡ Вперёд</button>
         </div>
       </div>
     `;
@@ -130,8 +155,8 @@ function loadQuestion() {
         <button onclick="checkAnswer()">Проверить</button>
         <div class="result" id="result"></div>
         <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-          <button onclick="nextQuestion()">➡ Вперёд</button>
           <button onclick="prevQuestion()">⬅ Назад</button>
+          <button onclick="nextQuestion()">➡ Вперёд</button>
         </div>
       </div>
     `;
@@ -174,7 +199,6 @@ function checkAnswer() {
         if (indexInWrong > -1) wrongQuestions.splice(indexInWrong, 1);
       }
     } else {
-      // Отображаем правильные пары
       const correctPairsHtml = q.correct.map((leftIndex, rightIndex) => `
         <div style="margin: 4px 0; display: flex; align-items: center; font-weight: bold;">
           <span style="min-width: 300px;">${q.right[rightIndex]}</span>
@@ -201,10 +225,7 @@ function checkAnswer() {
       }
     });
 
-    const correctSet = new Set(q.correct);
-    const selectedSet = new Set(selected);
-
-    if (arraysEqual([...selected].sort(), [...q.correct].sort())) {
+    if (arraysEqual(selected.sort(), q.correct.sort())) {
       resultDiv.innerHTML = '<span class="correct">✅ Правильно!</span>';
       if (mode === 'main') correctCount++;
       if (mode === 'wrong') {
@@ -215,15 +236,15 @@ function checkAnswer() {
       }
     } else {
       resultDiv.innerHTML = '<span class="incorrect">❌ Неправильно.</span><br>';
-      if (mode === 'main') {
-        if (!wrongQuestions.some(item => item.question === q.question)) {
-          wrongQuestions.push({...q});
-        }
+      if (mode === 'main' && !wrongQuestions.some(item => item.question === q.question)) {
+        wrongQuestions.push({...q});
       }
+      const correctSet = new Set(q.correct);
+      const selectedSet = new Set(selected);
       inputs.forEach(el => {
         const idx = parseInt(el.getAttribute("data-index"));
-        if (correctSet.has(idx)) el.parentElement.style.color = 'green';
-        else if (selectedSet.has(idx)) el.parentElement.style.color = 'red';
+        if (correctSet.has(idx)) el.parentElement.style.color = '#4caf50';
+        else if (selectedSet.has(idx)) el.parentElement.style.color = '#f44336';
       });
     }
   }
@@ -239,7 +260,7 @@ function nextQuestion() {
   if (currentQuestion < questions.length - 1) {
     currentQuestion++;
     loadQuestion();
-  } else {
+  } else if (mode === 'main') {
     currentQuestion++;
     loadQuestion();
   }
