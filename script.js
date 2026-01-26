@@ -120,8 +120,8 @@ function loadQuestion() {
         <button onclick="checkAnswer()">Проверить</button>
         <div class="result" id="result"></div>
         <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="nextQuestion()">➡ Вперёд</button>
           <button onclick="prevQuestion()">⬅ Назад</button>
-          <button onclick="nextQuestion()">➡ Вперёд</button>
         </div>
       </div>
     `;
